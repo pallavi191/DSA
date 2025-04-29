@@ -15,11 +15,19 @@ class Queue {
     bool isEmpty() {
         return front == -1;    
     }
-    
+    bool isFull() {
+        return rear == size-1;    
+    }
     int totalSize() {
         return size;
     }
-    
+    void startOfQueue() {
+        if(front == -1) {
+            cout << "Queue is empty" << endl;
+        } else {
+            cout << "Front of the Queue is " << arr[front] << endl;
+        }
+    }
     void push(int x) {
         // queue is empty
         if(isEmpty()) {
@@ -28,7 +36,7 @@ class Queue {
             arr[front] = x;
             cout << "Inserted " << x << " in queue at " << rear << endl;
             // rear += 1;
-        } else if(rear == size-1) { // queue is full
+        } else if(isFull()) { // queue is full
             cout << "Queue is overflow" << endl;
         } else {
             rear += 1;
@@ -36,7 +44,6 @@ class Queue {
             cout << "Inserted " << x << " in queue at " << rear << endl;
         }
     }
-    
     void pop() {
         // queue is empty
   
@@ -59,6 +66,7 @@ int main() {
     Q1.push(5);   // Inserted 5 in queue at 4
     Q1.push(6);   // Queue is overflow
     Q1.pop();     // deleted 1 from queue at 0
+    Q1.startOf(); // front of the queue 
     Q1.pop();     // deleted 2 from queue at 1
     Q1.push(6);   // Queue is overflow
     Q1.pop();     // deleted 3 from queue at 2
