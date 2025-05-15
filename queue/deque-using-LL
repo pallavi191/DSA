@@ -1,0 +1,115 @@
+// Online C++ compiler to run C++ program online
+#include <iostream>
+using namespace std;
+
+class Node {
+    public:
+    Node *prev, *next;
+    int data;
+    Node(int x) {
+        data = x;
+        prev = next = NULL;
+    }
+};
+
+class Deque {
+    Node *front, *rear;
+    public:
+    Deque() {
+        front = rear = NULL;
+    }
+    
+    bool isEmpty() {
+        return front == NULL;
+    }
+    
+    void push_back(int x) {
+        if(isEmpty()) {
+            Node *temp = new Node(x);
+            front = rear = temp;
+        } else {
+            Node *temp = new Node(x);
+            temp -> prev = rear;
+            temp -> next = NULL;
+            rear -> next = temp;
+            rear = temp;
+        }
+        cout << "Pushed back " << x << endl;
+    }
+
+    void push_front(int x) {
+        if(isEmpty()) {
+            Node *temp = new Node(x);
+            front = rear = temp;
+        } else {
+            Node *temp = new Node(x);
+            temp -> prev = NULL;
+            temp -> next = front;
+            front -> prev = temp;
+            front = temp;
+        }
+        cout << "Pushed front " << x << endl;
+    }
+
+    void pop_front() {
+        if(isEmpty()) {
+            cout << "Queue is empty" << endl;
+        } else {
+            Node *temp = front;
+            cout << "Popped front " << temp -> data << endl;
+            front = temp -> next;
+            delete temp;
+            
+            if(front) {
+                front -> prev = NULL;
+            } else {
+                rear = NULL;
+            }
+        }
+    }
+
+    void pop_back() {
+        if(isEmpty()) {
+            cout << "Queue is empty" << endl;
+        } else {
+            Node *temp = rear;
+            cout << "Popped back " << temp -> data << endl;
+            rear = temp -> prev;
+            delete temp;
+            
+            if(rear) {
+                rear -> next = NULL;
+            } else {
+                front = NULL;
+            }
+        }
+    }
+
+    void start() {
+        if(isEmpty()) {
+            cout << "Queue is empty" << endl;
+        } else {
+            cout << "start is " << front -> data << endl;
+        }
+    }
+
+    void end() {
+        if(isEmpty()) {
+            cout << "Queue is empty" << endl;
+        } else {
+            cout << "End is " << rear -> data << endl;
+        }
+    }
+};
+
+
+int main() {
+     
+    Deque q;
+    q.push_back(5);
+    q.push_front(8);
+    q.end();
+    q.start();
+
+    return 0;
+}
