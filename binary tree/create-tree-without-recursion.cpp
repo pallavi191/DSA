@@ -17,11 +17,10 @@ int main() {
 
     int first, second;
 
-    Node* root = NULL;
+    Node* root = new Node(1);
+    q.push(root);
 
-    Node *temp = new Node(1);
-    root = temp;
-    q.push(temp);
+    Node* temp = NULL;
 
     while(!q.empty()) {
         temp = q.front();
