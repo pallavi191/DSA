@@ -1,0 +1,27 @@
+// Polymerphism - compile time - 1) function overloading
+#include <iostream>
+using namespace std;
+
+class Area {
+    public:
+    int calculateArea(int r) {
+        return 3.14 * r * r;
+    }
+    int calculateArea(int l, int b) {
+        return l * b;
+    }
+};
+
+int main() {
+    // Write C++ code here
+    Area A1;
+    // function overloading - compile time
+    int area1 = A1.calculateArea(10);
+    int area2 = A1.calculateArea(10, 20);
+    // int area3 = A1.calculateArea("pallavi"); //throws compile time err
+
+    cout << "area of circle: " << area1 << endl;
+    cout << "area of rectangle: " << area2 << endl;
+    
+    return 0;
+}
