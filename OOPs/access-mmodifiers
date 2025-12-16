@@ -1,0 +1,48 @@
+// Online C++ compiler to run C++ program online
+#include <iostream>
+using namespace std;
+
+class Base {
+    int a;
+    protected:
+    int b;
+    public:
+    int c;
+    
+    // private access within class
+    Base() {
+        a = 10;
+        b = 20;
+        c = 30;
+        cout << "Inside Base Class: a = " << a << " b = " << b << " c = " << c << endl;
+    }
+};
+
+class Derived : public Base {
+    // a = 10; // not accessible
+    public:
+    Derived() {
+        b = 30;
+        c = 40;
+        cout << "Inside Derived Class: a = NA " << " b = " << b << " c = " << c << endl;
+    }
+};
+
+int main() {
+    // Write C++ code here
+
+    Base b;
+    Derived d;
+    // b.a = 10; // not accessible
+    // b.b = 20; // not accessible
+    b.c = 50;
+    cout << "Inside External Code(main): a = NA b = NA" << " c = " << b.c << endl;
+
+    return 0;
+}
+
+Output:
+// Inside Base Class: a = 10 b = 20 c = 30 // base class call
+// Inside Base Class: a = 10 b = 20 c = 30 // derived class call
+// Inside Derived Class: a = NA  b = 30 c = 40
+// Inside External Code(main): a = NA b = NA c = 50
