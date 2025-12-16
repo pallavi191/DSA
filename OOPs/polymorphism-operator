@@ -1,0 +1,41 @@
+// Polymerphism
+#include <iostream>
+using namespace std;
+
+class Complex {
+    int img, real;
+    public:
+    // default constructor for ans
+    Complex() {
+        
+    }
+    Complex(int real, int img) {
+        this -> real = real;
+        this -> img = img;
+    }
+    void display() {
+        cout << real << " + i" << img << endl;
+    }
+    
+    // operator overloading - return_type operator<symbol>(arguments){}
+    Complex operator +(Complex &C) {
+        Complex ans;
+        ans.real = real + C.real;
+        ans.img = img + C.img;
+        
+        return ans;
+    }
+};
+
+int main() {
+    // Write C++ code here
+    Complex C1(2, 3);
+    Complex C2(4, 5);
+
+    C1.display();
+    C2.display();
+    
+    Complex C3 = C1 + C2; // ie - c1.fun(c2);
+    C3.display();
+    return 0;
+}
