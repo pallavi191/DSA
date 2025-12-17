@@ -1,0 +1,83 @@
+// #Signle Level Inheritance
+#include <iostream>
+using namespace std;
+
+class Youtuber {
+    protected:
+    int subscribers;
+
+    public:
+        
+    Youtuber() {
+        cout << "I am youtuber class's constructor..." << endl;
+    }
+    ~Youtuber() {
+        cout << "I am youtuber class's destructor..." << endl;
+    }
+
+    void printSubscribers() {
+        cout << "My youtube subscribers are: " << subscribers << endl;
+    }
+};
+
+class Engineer {
+    protected:
+    string specialization;
+
+    public:
+
+    Engineer() {
+        cout << "I am Engineer class's constructor..." << endl;
+    }
+    
+    ~Engineer() {
+        cout << "I am Engineer class's destructor..." << endl;
+    }
+
+    void printSpecialization() {
+        cout << "I have specializion in the field of: " << specialization << endl;
+    }
+};
+
+class CodeTeacher : public Engineer, public Youtuber {
+    protected:
+    string name;
+
+    public:
+    
+    CodeTeacher(int subscribers, string specialization, string name) {
+        cout << "I am CodeTeacher class's constructor..." << endl;
+        this -> subscribers = subscribers;
+        this -> specialization = specialization;
+        this -> name = name;
+    }
+
+    void display() {
+        cout << "My name is: " << name << endl;
+        Engineer::printSpecialization(); //base class function access
+        Youtuber::printSubscribers();
+    }
+    
+    ~CodeTeacher() {
+        cout << "I am CodeTeacher class's destructor..." << endl;
+    }
+};
+
+int main() {
+    CodeTeacher c1(25, "computer", "Pallavi");
+    c1.display();
+
+    // output:
+    // I am Engineer class's constructor...
+    // I am youtuber class's constructor...
+    // I am CodeTeacher class's constructor...
+    // My name is: Pallavi
+    // I have specializion in the field of: computer
+    // My youtube subscribers are: 25
+    // I am CodeTeacher class's destructor...
+    // I am youtuber class's destructor...
+    // I am Engineer class's destructor...
+
+
+    return 0;
+}
