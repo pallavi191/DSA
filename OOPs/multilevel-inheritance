@@ -1,0 +1,80 @@
+// #Signle Level Inheritance
+#include <iostream>
+using namespace std;
+
+class Human {
+    protected:
+    int age;
+    string name;
+
+    public:
+    Human(int age, string name) {
+        this -> age = age;
+        this -> name = name;
+    }
+
+    void display() {
+        cout << "My name is: " << name << " and my age is: " << age << endl;
+    }
+    
+    void printName() {
+        cout << "My name is: " << name << endl;
+    }
+};
+
+class Employee : public Human {
+    protected:
+    int salary;
+
+    public:
+    Employee(int age, int salary, string name) : Human(age, name), salary(salary) { }
+
+    void display() {
+        cout << "My salary is: " << salary << endl;
+        Human::display(); //base class function access
+    }
+};
+
+class Manager : public Employee {
+    protected:
+    string dept;
+
+    public:
+    Manager(int age, int salary, string name, string dept) : Employee(age, salary, name), dept(dept) { }
+
+    void display() {
+        cout << "I am working in dept: " << dept << endl;
+        Employee::display(); //base class function access
+    }
+
+};
+
+int main() {
+    Manager m1(25, 20000, "Pallavi", "Computer");
+    m1.display();
+
+    // output:
+    // I am working in dept: Computer
+    // My salary is: 20000
+    // My name is: Pallavi and my age is: 25
+
+    Employee e1(25, 20000, "Pallavi");
+    e1.display();
+
+    // output:
+    // My salary is: 20000
+    // My name is: Pallavi and my age is: 25
+
+    Human h1(25, "Pallavi");
+    h1.display();
+
+    // output:
+    // My name is: Pallavi and my age is: 25
+
+    m1.printName(); // if child does not have then it will go to parent
+
+    // output:
+    // My name is: Pallavi
+
+    return 0;
+}
