@@ -12,6 +12,8 @@
 //          \       /
 //             Car
 
+// ✔️ Every multipath inheritance is hybrid
+// ❌ Every hybrid inheritance is not necessarily multipath
 
 #include <iostream>
 using namespace std;
