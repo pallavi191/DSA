@@ -1,0 +1,50 @@
+// #Signle Level Inheritance
+#include <iostream>
+using namespace std;
+
+class Human {
+    protected:
+    int age;
+    string color, name;
+
+    public:
+    Human(int age, string name, string color) {
+        this -> age = age;
+        this -> name = name;
+        this -> color = color;
+    }
+
+    void display() {
+        cout << "Age: " << age << " Skin color: " << color << " Name: " << name << endl;
+    }
+};
+
+class Teacher : public Human {
+    int salary;
+
+    public:
+    Teacher(int age, int salary, string name, string color) : Human(age, name, color) {
+        this -> salary = salary;
+    }
+
+    Teacher(int age, string name, string color) : Human(age, name, color), salary(5000) {}
+
+    void display() {
+        cout << "Salary: " << salary << endl;
+        Human::display(); //base class function access
+    }
+};
+
+
+int main() {
+    Teacher t1(25, 20000, "Pallavi", "White");
+    t1.display();
+
+    Human *t2 = new Teacher(25, 20000, "Pallavi", "White");
+    t2 -> display(); //if not added virtual key will print human
+
+    Teacher t3(25, "Pallavi", "White");
+    t3.display();
+
+    return 0;
+}
