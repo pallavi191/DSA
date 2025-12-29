@@ -1,0 +1,29 @@
+// Polymerphism - run time polymorphism - virtual keyword
+#include <iostream>
+using namespace std;
+
+class Animal {
+    public:
+    virtual void speak() {
+        cout << "Animal speaking..." << endl;
+    }
+};
+
+class Dog: public Animal {
+    public:
+    void speak() {
+        cout << "Dog speaking - bark..." << endl;
+    }
+};
+int main() {
+    // Write C++ code here
+    Animal A1;
+    A1.speak(); //Animal speaking...
+    Animal *A2 = new Dog();
+    A2 -> speak(); 
+    // Without the virtual keyword, the function call is resolved at compile time
+    // based on the pointer type. To enable runtime polymorphism, we must use
+    // the virtual keyword.
+
+    return 0;
+}
