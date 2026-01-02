@@ -2,28 +2,56 @@
 #include<vector>
 using namespace std;
 
-// Base Class
+/*
+-------------------------------------------------
+BASE CLASS : Account
+-------------------------------------------------
+OOP Concepts Used:
+1. Encapsulation   -> Data members are protected
+2. Abstraction     -> Pure virtual function calculateInterest()
+3. Polymorphism    -> Virtual functions (display, withdraw)
+-------------------------------------------------
+*/
 class Account {
-    // protected:
-    public:
-      int accNumber;
-      double balance;
-      string accHolder;
+protected:
+    int accNumber;         // Account number (hidden from outside)
+    double balance;        // Account balance
+    string accHolder;      // Account holder name
 
-    
-    Account(int accNum, double bal, string holder) : accNumber(accNum), balance(bal), accHolder(holder) {};
-
-    virtual void display() {
-        cout << "Account Number: " << accNumber << " Account Holder Name: " << accHolder << ", Balance: " << balance << endl;
+public:
+    // Getter method (Encapsulation)
+    int getAccNumber() const {
+        return accNumber;
     }
 
+    // Parameterized constructor
+    Account(int accNum, double bal, string holder)
+        : accNumber(accNum), balance(bal), accHolder(holder) {}
+
+    // Virtual function to enable runtime polymorphism
+    virtual void display() {
+        cout << "Account Number: " << accNumber
+             << ", Account Holder Name: " << accHolder
+             << ", Balance: " << balance << endl;
+    }
+
+    /*
+    Pure virtual function (Abstraction)
+    Forces derived classes to implement their own
+    interest calculation logic
+    */
     virtual void calculateInterest() = 0;
 
+    /*
+    Operator Overloading (+)
+    Used here to perform deposit operation
+    */
     void operator+(int amount) {
         balance += amount;
         cout << amount << " deposited. New balance: " << balance << endl;
     }
-    
+
+    // Virtual withdraw method (Polymorphism)
     virtual void withdraw(int amount) {
         if(amount <= balance) {
             balance -= amount;
@@ -32,45 +60,73 @@ class Account {
             cout << "Insufficient balance!" << endl;
         }
     }
-    
-    virtual ~Account() { }
+
+    // Virtual destructor to avoid memory leaks
+    virtual ~Account() {}
 };
 
-class SavingsAccount: public Account {
-    int interestRate;
-    
-    public:
-    SavingsAccount(int accNum, double bal, string holder, int rate)
-    : Account(accNum, bal, holder), interestRate(rate) {}
+/*
+-------------------------------------------------
+DERIVED CLASS : SavingsAccount
+-------------------------------------------------
+OOP Concepts Used:
+1. Inheritance      -> public Account
+2. Polymorphism    -> Overridden methods
+-------------------------------------------------
+*/
+class SavingsAccount : public Account {
+    int interestRate;   // Interest rate specific to savings account
 
-    void calculateInterest() {
+public:
+    SavingsAccount(int accNum, double bal, string holder, int rate)
+        : Account(accNum, bal, holder), interestRate(rate) {}
+
+    // Overriding pure virtual function
+    void calculateInterest() override {
         double interest = balance * interestRate / 100;
         cout << "Savings Account Interest: " << interest << endl;
     }
-    
+
+    // Overriding display function
     void display() override {
-        cout << "[savings] ";
+        cout << "[Savings] ";
         Account::display();
     }
 };
 
-class CurrentAccount: public Account {
-    double overdraftLimit;
-    
-    public:
+/*
+-------------------------------------------------
+DERIVED CLASS : CurrentAccount
+-------------------------------------------------
+OOP Concepts Used:
+1. Inheritance
+2. Polymorphism (method overriding)
+-------------------------------------------------
+*/
+class CurrentAccount : public Account {
+    double overdraftLimit;   // Extra withdrawal limit
+
+public:
     CurrentAccount(int accNum, double bal, string holder, double limit)
-    : Account(accNum, bal, holder), overdraftLimit(limit) {}
-    
-    void calculateInterest() {
-        cout << "Current Account: No interest. Overdraft limit: " << overdraftLimit << endl;
+        : Account(accNum, bal, holder), overdraftLimit(limit) {}
+
+    // No interest for current account
+    void calculateInterest() override {
+        cout << "Current Account: No interest. Overdraft limit: "
+             << overdraftLimit << endl;
     }
-    
+
+    // Overriding display function
     void display() override {
-        cout << "[current] " ;
+        cout << "[Current] ";
         Account::display();
     }
-    
-    virtual void withdraw(int amount) {
+
+    /*
+    Overriding withdraw function
+    Allows overdraft withdrawal
+    */
+    void withdraw(int amount) override {
         if(amount <= balance + overdraftLimit) {
             balance -= amount;
             cout << amount << " withdrawn. New balance: " << balance << endl;
@@ -81,10 +137,14 @@ class CurrentAccount: public Account {
 };
 
 int main() {
-    
+
+    /*
+    Vector of base class pointers
+    Demonstrates runtime polymorphism
+    */
     vector<Account*> accounts;
     int choice;
-    
+
     do {
         cout << "\n--- Banking System Menu ---\n";
         cout << "1. Create Savings Account\n";
@@ -98,32 +158,33 @@ int main() {
         cin >> choice;
 
         switch(choice) {
-            case 1:{
+
+            case 1: {
                 int accNum;
                 string holder;
                 double bal, rate;
 
                 cout << "Enter Account Number, Holder Name, Initial Balance, Interest Rate: ";
                 cin >> accNum >> holder >> bal >> rate;
-                accounts.push_back(new SavingsAccount(accNum, bal, holder, rate));
 
-                cout << "Savings Account Created!" << endl;
-                
+                accounts.push_back(new SavingsAccount(accNum, bal, holder, rate));
+                cout << "Savings Account Created!\n";
                 break;
             }
-            case 2:{
+
+            case 2: {
                 int accNum;
                 string holder;
                 double bal, overdraftLimit;
 
                 cout << "Enter Account Number, Holder Name, Initial Balance, Overdraft Limit: ";
                 cin >> accNum >> holder >> bal >> overdraftLimit;
+
                 accounts.push_back(new CurrentAccount(accNum, bal, holder, overdraftLimit));
-
-                cout << "Savings Account Created!" << endl;
-
+                cout << "Current Account Created!\n";
                 break;
             }
+
             case 3: {
                 int accNum;
                 double amt;
@@ -131,19 +192,17 @@ int main() {
                 cin >> accNum >> amt;
 
                 bool found = false;
-
                 for(auto acc : accounts) {
-                    if(acc->accNumber == accNum) {
-                        *acc + amt;
+                    if(acc->getAccNumber() == accNum) {
+                        *acc + amt;    // Operator overloading
                         found = true;
                         break;
                     }
                 }
-                
-                if(!found) cout << "Account not found." << endl;
-                
+                if(!found) cout << "Account not found.\n";
                 break;
             }
+
             case 4: {
                 int accNum;
                 double amt;
@@ -151,56 +210,63 @@ int main() {
                 cin >> accNum >> amt;
 
                 bool found = false;
-
                 for(auto acc : accounts) {
-                    if(acc->accNumber == accNum) {
-                        acc -> withdraw(amt);
+                    if(acc->getAccNumber() == accNum) {
+                        acc->withdraw(amt);   // Polymorphic call
                         found = true;
                         break;
                     }
                 }
-                
-                if(!found) cout << "Account not found." << endl;
-                
+                if(!found) cout << "Account not found.\n";
                 break;
             }
+
             case 5: {
                 int accNum;
                 cout << "Enter Account Number: ";
                 cin >> accNum;
+
                 bool found = false;
-     
                 for(auto acc : accounts) {
-                    if(acc->accNumber == accNum) {
-                        acc -> display();
+                    if(acc->getAccNumber() == accNum) {
+                        acc->display();  // Runtime polymorphism
                         found = true;
                         break;
                     }
                 }
+                if(!found) cout << "Account not found.\n";
+                break;
             }
+
             case 6: {
                 int accNum;
                 cout << "Enter Account Number: ";
                 cin >> accNum;
-                bool found = false;
 
+                bool found = false;
                 for(auto acc : accounts) {
-                    if(acc->accNumber == accNum) {
-                        acc -> calculateInterest();
+                    if(acc->getAccNumber() == accNum) {
+                        acc->calculateInterest(); // Dynamic binding
                         found = true;
                         break;
                     }
                 }
+                if(!found) cout << "Account not found.\n";
+                break;
             }
+
             case 0:
                 cout << "Exiting...\n";
                 break;
+
             default:
                 cout << "Invalid choice!\n";
         }
 
     } while(choice != 0);
-    
+
+    // Free dynamically allocated memory
     for(auto acc : accounts) delete acc;
+
     return 0;
 }
