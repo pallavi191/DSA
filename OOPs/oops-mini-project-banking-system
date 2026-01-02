@@ -1,0 +1,79 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+
+// Base Class
+class Account {
+    protected:
+      int accNumber;
+      double balance;
+
+    public:
+    Account(int accNum, double bal) : accNumber(accNum), balance(bal) {};
+
+    virtual void display() {
+        cout << "Account Number: " << accNumber << ", Balance: " << balance << endl;
+    }
+
+    virtual void calculateInterest() = 0;
+
+    void operator+(int amount) {
+        balance += amount;
+        cout << amount << " deposited. New balance: " << balance << endl;
+    }
+    
+    virtual ~Account() { }
+};
+
+class SavingsAccount: public Account {
+    int interestRate;
+    
+    public:
+    SavingsAccount(int accNum, double bal, int rate)
+    : Account(accNum, bal), interestRate(rate) {}
+
+    void calculateInterest() {
+        double interest = balance * interestRate / 100;
+        cout << "Savings Account Interest: " << interest << endl;
+    }
+    
+    void display() override {
+        cout << "[savings] ";
+        Account::display();
+    }
+};
+
+class CurrentAccount: public Account {
+    double overdraftLimit;
+    
+    public:
+    CurrentAccount(int accNum, double bal, double limit)
+    : Account(accNum, bal), overdraftLimit(limit) {}
+    
+    void calculateInterest() {
+        cout << "Current Account: No interest. Overdraft limit: " << overdraftLimit << endl;
+    }
+    
+    void display() override {
+        cout << "[current] " ;
+        Account::display();
+    }
+};
+
+int main() {
+    
+    vector<Account*> accounts;
+
+    accounts.push_back(new SavingsAccount(1001, 5000, 5.0));
+    accounts.push_back(new CurrentAccount(1001, 5000, 50000));
+
+    for(auto acc : accounts) {
+        acc -> display();
+        acc -> calculateInterest();
+        *acc + 1000;
+        cout << endl;
+    }
+    
+    for(auto acc : accounts) delete acc;
+    return 0;
+}
