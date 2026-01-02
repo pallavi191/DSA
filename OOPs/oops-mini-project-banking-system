@@ -4,15 +4,17 @@ using namespace std;
 
 // Base Class
 class Account {
-    protected:
+    // protected:
+    public:
       int accNumber;
       double balance;
+      string accHolder;
 
-    public:
-    Account(int accNum, double bal) : accNumber(accNum), balance(bal) {};
+    
+    Account(int accNum, double bal, string holder) : accNumber(accNum), balance(bal), accHolder(holder) {};
 
     virtual void display() {
-        cout << "Account Number: " << accNumber << ", Balance: " << balance << endl;
+        cout << "Account Number: " << accNumber << " Account Holder Name: " << accHolder << ", Balance: " << balance << endl;
     }
 
     virtual void calculateInterest() = 0;
@@ -22,6 +24,15 @@ class Account {
         cout << amount << " deposited. New balance: " << balance << endl;
     }
     
+    virtual void withdraw(int amount) {
+        if(amount <= balance) {
+            balance -= amount;
+            cout << amount << " withdrawn. New balance: " << balance << endl;
+        } else {
+            cout << "Insufficient balance!" << endl;
+        }
+    }
+    
     virtual ~Account() { }
 };
 
@@ -29,8 +40,8 @@ class SavingsAccount: public Account {
     int interestRate;
     
     public:
-    SavingsAccount(int accNum, double bal, int rate)
-    : Account(accNum, bal), interestRate(rate) {}
+    SavingsAccount(int accNum, double bal, string holder, int rate)
+    : Account(accNum, bal, holder), interestRate(rate) {}
 
     void calculateInterest() {
         double interest = balance * interestRate / 100;
@@ -47,8 +58,8 @@ class CurrentAccount: public Account {
     double overdraftLimit;
     
     public:
-    CurrentAccount(int accNum, double bal, double limit)
-    : Account(accNum, bal), overdraftLimit(limit) {}
+    CurrentAccount(int accNum, double bal, string holder, double limit)
+    : Account(accNum, bal, holder), overdraftLimit(limit) {}
     
     void calculateInterest() {
         cout << "Current Account: No interest. Overdraft limit: " << overdraftLimit << endl;
@@ -58,21 +69,137 @@ class CurrentAccount: public Account {
         cout << "[current] " ;
         Account::display();
     }
+    
+    virtual void withdraw(int amount) {
+        if(amount <= balance + overdraftLimit) {
+            balance -= amount;
+            cout << amount << " withdrawn. New balance: " << balance << endl;
+        } else {
+            cout << "Insufficient balance!" << endl;
+        }
+    }
 };
 
 int main() {
     
     vector<Account*> accounts;
+    int choice;
+    
+    do {
+        cout << "\n--- Banking System Menu ---\n";
+        cout << "1. Create Savings Account\n";
+        cout << "2. Create Current Account\n";
+        cout << "3. Deposit\n";
+        cout << "4. Withdraw\n";
+        cout << "5. Display Account\n";
+        cout << "6. Calculate Interest\n";
+        cout << "0. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
 
-    accounts.push_back(new SavingsAccount(1001, 5000, 5.0));
-    accounts.push_back(new CurrentAccount(1001, 5000, 50000));
+        switch(choice) {
+            case 1:{
+                int accNum;
+                string holder;
+                double bal, rate;
 
-    for(auto acc : accounts) {
-        acc -> display();
-        acc -> calculateInterest();
-        *acc + 1000;
-        cout << endl;
-    }
+                cout << "Enter Account Number, Holder Name, Initial Balance, Interest Rate: ";
+                cin >> accNum >> holder >> bal >> rate;
+                accounts.push_back(new SavingsAccount(accNum, bal, holder, rate));
+
+                cout << "Savings Account Created!" << endl;
+                
+                break;
+            }
+            case 2:{
+                int accNum;
+                string holder;
+                double bal, overdraftLimit;
+
+                cout << "Enter Account Number, Holder Name, Initial Balance, Overdraft Limit: ";
+                cin >> accNum >> holder >> bal >> overdraftLimit;
+                accounts.push_back(new CurrentAccount(accNum, bal, holder, overdraftLimit));
+
+                cout << "Savings Account Created!" << endl;
+
+                break;
+            }
+            case 3: {
+                int accNum;
+                double amt;
+                cout << "Enter Account Number and Deposit Amount: ";
+                cin >> accNum >> amt;
+
+                bool found = false;
+
+                for(auto acc : accounts) {
+                    if(acc->accNumber == accNum) {
+                        *acc + amt;
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if(!found) cout << "Account not found." << endl;
+                
+                break;
+            }
+            case 4: {
+                int accNum;
+                double amt;
+                cout << "Enter Account Number and Withdraw Amount: ";
+                cin >> accNum >> amt;
+
+                bool found = false;
+
+                for(auto acc : accounts) {
+                    if(acc->accNumber == accNum) {
+                        acc -> withdraw(amt);
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if(!found) cout << "Account not found." << endl;
+                
+                break;
+            }
+            case 5: {
+                int accNum;
+                cout << "Enter Account Number: ";
+                cin >> accNum;
+                bool found = false;
+     
+                for(auto acc : accounts) {
+                    if(acc->accNumber == accNum) {
+                        acc -> display();
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            case 6: {
+                int accNum;
+                cout << "Enter Account Number: ";
+                cin >> accNum;
+                bool found = false;
+
+                for(auto acc : accounts) {
+                    if(acc->accNumber == accNum) {
+                        acc -> calculateInterest();
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            case 0:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice!\n";
+        }
+
+    } while(choice != 0);
     
     for(auto acc : accounts) delete acc;
     return 0;
